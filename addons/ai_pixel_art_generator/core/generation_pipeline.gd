@@ -1,5 +1,4 @@
 extends Node
-class_name GenerationPipeline
 
 ## Generation Pipeline Orchestrator
 ##
@@ -45,9 +44,29 @@ var _total_steps: int = 0
 var _progress_message: String = ""
 var _logger: PluginLogger
 
+# Dependencies (injected)
+var _image_processor: Variant = null
+var _gemini_client: Variant = null
+var _palette_repository: Variant = null
+var _settings_repository: Variant = null
+
+# Generation context (for async callback)
+var _current_generation_context: Dictionary = {}
+
 
 func _init() -> void:
 	_logger = PluginLogger.get_logger("GenerationPipeline")
+
+
+## Initializes the pipeline with dependencies
+func initialize(image_processor: Variant, gemini_client: Variant,
+				palette_repository: Variant, settings_repository: Variant) -> void:
+	_image_processor = image_processor
+	_gemini_client = gemini_client
+	_palette_repository = palette_repository
+	_settings_repository = settings_repository
+
+	_logger.info("Pipeline initialized with dependencies")
 
 
 ## Generates a pixel art image using the template and settings
@@ -74,9 +93,8 @@ func generate(template: Template, settings: GenerationSettings) -> void:
 	set_pipeline_state(State.PROCESSING)
 	set_pipeline_progress(0, 5, "Initializing")
 
-	# TODO: Implement actual generation steps in next iteration
-	# For now, this is a stub that will be filled in
-	_emit_error("Generation not yet implemented - placeholder")
+	# Start async generation process
+	_run_generation_async(template, settings)
 
 
 ## Validates a template
@@ -221,3 +239,140 @@ func _state_to_string(state: State) -> String:
 		State.COMPLETED: return "COMPLETED"
 		State.ERROR: return "ERROR"
 		_: return "UNKNOWN"
+
+
+## Internal: Runs the async generation process
+func _run_generation_async(template: Template, settings: GenerationSettings) -> void:
+	# Check dependencies
+	if _image_processor == null:
+		_emit_error("ImageProcessor not initialized")
+		return
+	if _gemini_client == null:
+		_emit_error("GeminiClient not initialized")
+		return
+	if _palette_repository == null:
+		_emit_error("PaletteRepository not initialized")
+		return
+	if _settings_repository == null:
+		_emit_error("SettingsRepository not initialized")
+		return
+
+	# Step 1: Load and conform reference image to palette
+	set_pipeline_progress(1, 5, "Loading reference image")
+
+	var ref_image_result := load_reference_image(template.reference_image_path)
+	if ref_image_result.is_err():
+		_emit_error("Failed to load reference image: %s" % ref_image_result.error)
+		return
+
+	var reference_image: Image = ref_image_result.value
+
+	# Load palette
+	var palette_result := _palette_repository.load_palette(template.palette_name)
+	if palette_result.is_err():
+		_emit_error("Failed to load palette: %s" % palette_result.error)
+		return
+
+	var palette = palette_result.value
+
+	# Conform reference image to palette
+	set_pipeline_progress(2, 5, "Conforming to palette")
+
+	var conform_result := _image_processor.conform_to_palette(reference_image, palette, true)
+	if conform_result.is_err():
+		_emit_error("Failed to conform image to palette: %s" % conform_result.error)
+		return
+
+	var conformed_image: Image = conform_result.value
+
+	# Step 2: Generate via Gemini API (async)
+	set_pipeline_progress(3, 5, "Generating via AI")
+
+	# Build full prompt
+	var prompt_result := build_full_prompt(template, settings)
+	if prompt_result.is_err():
+		_emit_error("Failed to build prompt: %s" % prompt_result.error)
+		return
+
+	var full_prompt: String = prompt_result.value
+
+	# Get API key
+	var api_key_result := _settings_repository.load_api_key()
+	if api_key_result.is_err():
+		_emit_error("No API key configured. Please add your Gemini API key in Settings.")
+		return
+
+	# Configure Gemini client
+	_gemini_client.api_key = api_key_result.value
+	_gemini_client.temperature = settings.temperature
+
+	# Connect to API response (one-time connection)
+	if not _gemini_client.generation_complete.is_connected(_on_api_generation_complete):
+		_gemini_client.generation_complete.connect(_on_api_generation_complete)
+
+	# Store context for async callback
+	_current_generation_context = {
+		"template": template,
+		"conformed_image": conformed_image
+	}
+
+	# Start async API call
+	_gemini_client.generate_image(full_prompt, conformed_image)
+
+
+## Internal: Handles Gemini API response
+func _on_api_generation_complete(result: Variant) -> void:
+	# Check if we have context
+	if _current_generation_context.is_empty():
+		_emit_error("API response received but no generation context found")
+		return
+
+	var template: Template = _current_generation_context.get("template")
+	var conformed_image: Image = _current_generation_context.get("conformed_image")
+
+	# Clear context
+	_current_generation_context.clear()
+
+	# Check API result
+	if result.is_err():
+		_emit_error("AI generation failed: %s" % result.error)
+		return
+
+	var generated_image: Image = result.value
+
+	# Step 3: Pixelate the generated image
+	set_pipeline_progress(4, 5, "Pixelating to target resolution")
+
+	var pixelate_result := _image_processor.pixelate(
+		generated_image,
+		template.target_resolution
+	)
+
+	if pixelate_result.is_err():
+		_emit_error("Failed to pixelate image: %s" % pixelate_result.error)
+		return
+
+	var pixelated_image: Image = pixelate_result.value
+
+	# Step 4: Upscale the pixelated image
+	set_pipeline_progress(5, 5, "Upscaling final image")
+
+	var upscale_result := _image_processor.upscale_pixelated(pixelated_image, 4)
+
+	if upscale_result.is_err():
+		_emit_error("Failed to upscale image: %s" % upscale_result.error)
+		return
+
+	var upscaled_image: Image = upscale_result.value
+
+	# Create result object
+	var gen_result := GenerationResult.new()
+	gen_result.conformed_image = conformed_image
+	gen_result.generated_image = generated_image
+	gen_result.pixelated_image = pixelated_image
+	gen_result.upscaled_image = upscaled_image
+
+	# Emit success
+	set_pipeline_state(State.COMPLETED)
+	_logger.info("Generation completed successfully")
+	generation_complete.emit(Result.ok(gen_result))

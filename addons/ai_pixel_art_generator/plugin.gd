@@ -17,6 +17,7 @@ const SettingsRepository = preload("res://addons/ai_pixel_art_generator/storage/
 const ExportManager = preload("res://addons/ai_pixel_art_generator/storage/export_manager.gd")
 const ImageProcessor = preload("res://addons/ai_pixel_art_generator/core/image_processor.gd")
 const GenerationPipeline = preload("res://addons/ai_pixel_art_generator/core/generation_pipeline.gd")
+const GeminiClient = preload("res://addons/ai_pixel_art_generator/api/gemini_client.gd")
 
 const MainPanel = preload("res://addons/ai_pixel_art_generator/ui/main_panel.tscn")
 
@@ -88,6 +89,11 @@ func _initialize_services() -> void:
 	var image_processor := ImageProcessor.new()
 	_container.register_service("image_processor", image_processor)
 
+	# API layer
+	var gemini_client := GeminiClient.new()
+	add_child(gemini_client)  # Needs to be in tree for HTTPRequest
+	_container.register_service("gemini_client", gemini_client)
+
 	# Service layer
 	var template_manager := TemplateManager.new()
 	add_child(template_manager)  # Needs to be in tree for signals
@@ -96,6 +102,15 @@ func _initialize_services() -> void:
 	# Pipeline layer
 	var generation_pipeline := GenerationPipeline.new()
 	add_child(generation_pipeline)  # Needs to be in tree for signals
+
+	# Initialize pipeline with dependencies
+	generation_pipeline.initialize(
+		image_processor,
+		gemini_client,
+		palette_repo,
+		settings_repo
+	)
+
 	_container.register_service("generation_pipeline", generation_pipeline)
 
 	_logger.info("Services initialized", {"count": _container.get_service_count()})
