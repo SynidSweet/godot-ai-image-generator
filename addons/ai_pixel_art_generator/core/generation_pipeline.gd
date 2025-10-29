@@ -268,7 +268,7 @@ func _run_generation_async(template: Template, settings: GenerationSettings) -> 
 	var reference_image: Image = ref_image_result.value
 
 	# Load palette
-	var palette_result := _palette_repository.load_palette(template.palette_name)
+	var palette_result: Variant = _palette_repository.load_palette(template.palette_name)
 	if palette_result.is_err():
 		_emit_error("Failed to load palette: %s" % palette_result.error)
 		return
@@ -278,7 +278,7 @@ func _run_generation_async(template: Template, settings: GenerationSettings) -> 
 	# Conform reference image to palette
 	set_pipeline_progress(2, 5, "Conforming to palette")
 
-	var conform_result := _image_processor.conform_to_palette(reference_image, palette, true)
+	var conform_result: Variant = _image_processor.conform_to_palette(reference_image, palette, true)
 	if conform_result.is_err():
 		_emit_error("Failed to conform image to palette: %s" % conform_result.error)
 		return
@@ -297,7 +297,7 @@ func _run_generation_async(template: Template, settings: GenerationSettings) -> 
 	var full_prompt: String = prompt_result.value
 
 	# Get API key
-	var api_key_result := _settings_repository.load_api_key()
+	var api_key_result: Variant = _settings_repository.load_api_key()
 	if api_key_result.is_err():
 		_emit_error("No API key configured. Please add your Gemini API key in Settings.")
 		return
@@ -343,7 +343,7 @@ func _on_api_generation_complete(result: Variant) -> void:
 	# Step 3: Pixelate the generated image
 	set_pipeline_progress(4, 5, "Pixelating to target resolution")
 
-	var pixelate_result := _image_processor.pixelate(
+	var pixelate_result: Variant = _image_processor.pixelate(
 		generated_image,
 		template.target_resolution
 	)
@@ -357,7 +357,7 @@ func _on_api_generation_complete(result: Variant) -> void:
 	# Step 4: Upscale the pixelated image
 	set_pipeline_progress(5, 5, "Upscaling final image")
 
-	var upscale_result := _image_processor.upscale_pixelated(pixelated_image, 4)
+	var upscale_result: Variant = _image_processor.upscale_pixelated(pixelated_image, 4)
 
 	if upscale_result.is_err():
 		_emit_error("Failed to upscale image: %s" % upscale_result.error)

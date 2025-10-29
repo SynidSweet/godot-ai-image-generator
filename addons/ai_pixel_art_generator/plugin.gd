@@ -90,7 +90,7 @@ func _initialize_services() -> void:
 	_container.register_service("image_processor", image_processor)
 
 	# API layer
-	var gemini_client := GeminiClient.new()
+	var gemini_client := GeminiClient.new("")  # Empty API key, will be set by pipeline
 	add_child(gemini_client)  # Needs to be in tree for HTTPRequest
 	_container.register_service("gemini_client", gemini_client)
 
