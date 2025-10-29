@@ -68,6 +68,10 @@ func _ready() -> void:
 		add_child(_template_editor)
 		_template_editor.template_saved.connect(_on_template_saved)
 
+	# If initialize() was already called, refresh the template list now
+	if _template_manager != null:
+		_refresh_template_list()
+
 
 ## Called by plugin.gd when panel is initialized
 func initialize(service_container: Variant) -> void:
@@ -117,6 +121,10 @@ func initialize(service_container: Variant) -> void:
 ## Refreshes the template dropdown list
 func _refresh_template_list() -> void:
 	if _template_manager == null:
+		return
+
+	# Check if UI nodes are ready yet
+	if _template_dropdown == null:
 		return
 
 	_template_dropdown.clear()
