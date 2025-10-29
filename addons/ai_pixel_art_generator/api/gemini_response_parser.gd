@@ -36,6 +36,19 @@ func _init() -> void:
 ##
 ## Returns: Result<Image>
 func parse_response(response: Dictionary) -> Result:
+	# Log the response structure for debugging
+	_logger.info("Parsing API response", {
+		"has_candidates": response.has("candidates"),
+		"has_error": response.has("error"),
+		"keys": str(response.keys())
+	})
+
+	# Check for API error
+	if response.has("error"):
+		var error_msg := extract_error_message(response)
+		_logger.error("API returned error", {"error": error_msg})
+		return Result.err("API error: %s" % error_msg)
+
 	# Validate response structure
 	if not response.has("candidates"):
 		var error_msg := extract_error_message(response)
@@ -59,6 +72,13 @@ func parse_response(response: Dictionary) -> Result:
 	var parts: Array = content["parts"]
 	if parts.is_empty():
 		return Result.err("Invalid response: parts array is empty")
+
+	# Log what we got in parts
+	_logger.info("Response parts", {"count": parts.size()})
+	for i in range(parts.size()):
+		var part = parts[i]
+		if part is Dictionary:
+			_logger.info("Part %d keys" % i, {"keys": str(part.keys())})
 
 	# Find first image part
 	for part in parts:
