@@ -1,0 +1,20 @@
+{
+	"dirs": ["res://test/unit/", "res://test/integration/"],
+	"should_exit": false,
+	"should_maximize": false,
+	"compact_mode": false,
+	"opacity": 100,
+	"log_level": 1,
+	"ignore_pause": true,
+	"hide_orphans": true,
+	"junit_xml_file": "",
+	"junit_xml_timestamp": false,
+	"double_strategy": "partial",
+	"include_subdirs": true,
+	"inner_class_name": "",
+	"paint_after": 0.1,
+	"prefix": "test_",
+	"suffix": ".gd",
+	"tests": [],
+	"selected": ""
+}
