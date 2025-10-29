@@ -1,7 +1,7 @@
 # Project Progress Summary
 
 **Last Updated**: 2025-10-29
-**Current Status**: Generation Flow UI Complete! 🎉
+**Current Status**: Settings Dialog Complete! 🎉
 
 ---
 
@@ -9,12 +9,12 @@
 
 | Metric | Value |
 |--------|-------|
-| **Iterations Completed** | 10 of 17 (59%) |
+| **Iterations Completed** | 11 of 17 (65%) |
 | **Core Foundation** | ✅ 100% Complete |
 | **Total Tests** | 283 passing |
 | **Total Assertions** | 638 |
 | **Test Pass Rate** | 100% |
-| **Lines of Code** | ~4,700 (implementation + tests) |
+| **Lines of Code** | ~5,000 (implementation + tests) |
 
 ---
 
@@ -33,8 +33,8 @@
 | 8 | UI Foundation | ✅ Complete | 0* | UI structure (*manual) |
 | 9 | UI - Templates | ✅ Complete | 0* | Template CRUD UI (*manual) |
 | 10 | UI - Generation | ✅ Complete | 0* | Generation flow UI (*manual) |
-| 11 | Polish Feature | 📋 Planned | - | Iterative polish UI |
-| 12 | Settings Dialog | 📋 Planned | - | Configuration UI |
+| 11 | Polish Feature | ⏭️ Skipped | - | Iterative polish UI |
+| 12 | Settings Dialog | ✅ Complete | 0* | Configuration UI (*manual) |
 | 13 | Preset Data | 📋 Planned | - | Bundled palettes |
 | 14 | Error Handling | 📋 Planned | - | User feedback |
 | 15 | Documentation | 📋 Planned | - | User guides |
@@ -76,7 +76,7 @@
 - ✅ ServiceContainer (DI)
 - ✅ Plugin Controller (main entry point)
 
-### UI Layer ⏳
+### UI Layer ✅
 - ✅ Main panel structure
 - ✅ Template selector
 - ✅ Input section
@@ -84,7 +84,7 @@
 - ✅ Output section
 - ✅ Template editor dialog (Iteration 9)
 - ✅ Generation workflow (Iteration 10)
-- 📋 Settings dialog (Iteration 12)
+- ✅ Settings dialog (Iteration 12)
 
 ---
 
@@ -239,24 +239,26 @@ You can already:
 - ✅ Generate pixel art through UI workflow
 - ✅ View all pipeline stages in real-time
 - ✅ Save generated images to project
+- ✅ Configure API key and settings through UI
+- ✅ Persist settings across editor sessions
 
-**What's missing**: API key configuration UI, Polish iterations, Preset palettes
+**What's missing**: Actual generation logic implementation, Polish iterations, Preset palettes
 
 ---
 
-## Next Milestone: Settings & Polish
+## Next Milestone: Complete Generation
 
-**Iteration 12 (Recommended Next)**: Settings Dialog
+**Iteration 5B (CRITICAL)**: Wire Pipeline Generation Logic
 
-Add UI for:
-- API key configuration
-- Temperature/aspect ratio settings
-- Export path configuration
-- Default palette selection
+Implement actual generation in pipeline:
+- Load reference image and conform to palette
+- Call Gemini API with saved API key
+- Pixelate and upscale generated image
+- Return complete GenerationResult
 
 **Alternative Options**:
-- Iteration 11: Polish Feature (iterative refinement)
-- Iteration 13: Preset Palettes (bundled color palettes)
+- Iteration 13: Preset Palettes (bundled DB32, AAP-64)
+- Iteration 14: Error Handling (success/error dialogs)
 
 ---
 
@@ -277,6 +279,7 @@ Add UI for:
 - ✅ ITERATION_8_COMPLETE.md - UI Foundation details
 - ✅ ITERATION_9_COMPLETE.md - Template UI details
 - ✅ ITERATION_10_COMPLETE.md - Generation UI details
+- ✅ ITERATION_12_COMPLETE.md - Settings Dialog details
 - ✅ PROGRESS.md (this file) - Quick overview
 
 ---
