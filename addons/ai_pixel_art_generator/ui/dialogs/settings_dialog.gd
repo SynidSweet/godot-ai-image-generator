@@ -66,11 +66,11 @@ func _load_settings() -> void:
 		_api_key_edit.text = ""
 
 	# Load temperature
-	var temp = _settings_repository.load_setting("generation", "temperature", 1.0)
+	var temp = _settings_repository.load_setting_or("generation.temperature", "1.0").to_float()
 	_temperature_spin.value = temp
 
 	# Load aspect ratio
-	var aspect_ratio = _settings_repository.load_setting("generation", "aspect_ratio", "1:1")
+	var aspect_ratio = _settings_repository.load_setting_or("generation.aspect_ratio", "1:1")
 	var aspect_idx = ASPECT_RATIOS.find(aspect_ratio)
 	if aspect_idx >= 0:
 		_aspect_ratio_option.selected = aspect_idx
@@ -78,11 +78,11 @@ func _load_settings() -> void:
 		_aspect_ratio_option.selected = 0
 
 	# Load export path
-	var export_path = _settings_repository.load_setting("export", "default_path", "res://")
+	var export_path = _settings_repository.load_setting_or("export.default_path", "res://")
 	_export_path_edit.text = export_path
 
 	# Load default palette
-	var default_palette = _settings_repository.load_setting("generation", "default_palette", "db32")
+	var default_palette = _settings_repository.load_setting_or("generation.default_palette", "db32")
 	_select_palette(default_palette)
 
 	_logger.debug("Settings loaded")
@@ -104,18 +104,18 @@ func _save_settings() -> void:
 		_logger.warn("API key is empty - not saving")
 
 	# Save temperature
-	_settings_repository.save_setting("generation", "temperature", _temperature_spin.value)
+	_settings_repository.save_setting("generation.temperature", str(_temperature_spin.value))
 
 	# Save aspect ratio
 	var selected_ratio = ASPECT_RATIOS[_aspect_ratio_option.selected]
-	_settings_repository.save_setting("generation", "aspect_ratio", selected_ratio)
+	_settings_repository.save_setting("generation.aspect_ratio", selected_ratio)
 
 	# Save export path
-	_settings_repository.save_setting("export", "default_path", _export_path_edit.text)
+	_settings_repository.save_setting("export.default_path", _export_path_edit.text)
 
 	# Save default palette
 	var palette_text = _default_palette_option.get_item_text(_default_palette_option.selected)
-	_settings_repository.save_setting("generation", "default_palette", palette_text)
+	_settings_repository.save_setting("generation.default_palette", palette_text)
 
 	_logger.info("Settings saved", {
 		"has_api_key": not api_key.is_empty(),
