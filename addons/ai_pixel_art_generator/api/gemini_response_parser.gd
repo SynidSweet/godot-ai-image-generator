@@ -80,9 +80,9 @@ func parse_response(response: Dictionary) -> Result:
 		if part is Dictionary:
 			_logger.info("Part %d keys" % i, {"keys": str(part.keys())})
 
-	# Find first image part
+	# Find first image part (check both camelCase and snake_case)
 	for part in parts:
-		if part is Dictionary and part.has("inline_data"):
+		if part is Dictionary and (part.has("inlineData") or part.has("inline_data")):
 			var image_result := extract_image_from_part(part)
 			if image_result.is_ok():
 				_logger.debug("Successfully extracted image from response")
@@ -95,18 +95,30 @@ func parse_response(response: Dictionary) -> Result:
 
 ## Extracts an Image from a response part
 func extract_image_from_part(part: Dictionary) -> Result:
-	if not part.has("inline_data"):
-		return Result.err("Part does not have inline_data")
+	# Check for both camelCase (actual API) and snake_case (our tests)
+	var inline_data_key := ""
+	if part.has("inlineData"):
+		inline_data_key = "inlineData"
+	elif part.has("inline_data"):
+		inline_data_key = "inline_data"
+	else:
+		return Result.err("Part does not have inlineData or inline_data")
 
-	var inline_data: Dictionary = part["inline_data"]
+	var inline_data: Dictionary = part[inline_data_key]
 
-	if not inline_data.has("mime_type"):
-		return Result.err("inline_data missing mime_type")
+	# Check for both camelCase (actual API) and snake_case (our tests)
+	var mime_key := ""
+	if inline_data.has("mimeType"):
+		mime_key = "mimeType"
+	elif inline_data.has("mime_type"):
+		mime_key = "mime_type"
+	else:
+		return Result.err("inline_data missing mimeType/mime_type")
 
 	if not inline_data.has("data"):
 		return Result.err("inline_data missing data")
 
-	var mime_type: String = inline_data["mime_type"]
+	var mime_type: String = inline_data[mime_key]
 	var base64_data: String = inline_data["data"]
 
 	# Validate mime type is image
