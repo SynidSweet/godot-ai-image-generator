@@ -64,12 +64,15 @@ func _ready() -> void:
 
 	# Create template editor dialog
 	_template_editor = TemplateEditorDialog.instantiate()
-	add_child(_template_editor)
-	_template_editor.template_saved.connect(_on_template_saved)
+	if _template_editor:
+		add_child(_template_editor)
+		_template_editor.template_saved.connect(_on_template_saved)
 
 
 ## Called by plugin.gd when panel is initialized
 func initialize(service_container: Variant) -> void:
+	if _logger == null:
+		_logger = PluginLogger.get_logger("MainPanel")
 	_logger.info("Initializing main panel with services")
 
 	# Get template_manager service

@@ -11,12 +11,12 @@ const PluginLogger = preload("res://addons/ai_pixel_art_generator/core/logger.gd
 
 signal template_saved(template)
 
-enum Mode {
+enum EditorMode {
 	CREATE,  ## Creating a new template
 	EDIT     ## Editing existing template
 }
 
-var _mode: Mode = Mode.CREATE
+var _mode: EditorMode = EditorMode.CREATE
 var _original_template: Template = null
 var _template_manager: Variant = null
 var _logger: PluginLogger
@@ -50,7 +50,7 @@ func initialize(template_manager: Variant) -> void:
 
 ## Opens dialog in CREATE mode
 func open_create() -> void:
-	_mode = Mode.CREATE
+	_mode = EditorMode.CREATE
 	_original_template = null
 
 	title = "Create New Template"
@@ -63,7 +63,7 @@ func open_create() -> void:
 
 ## Opens dialog in EDIT mode
 func open_edit(template: Template) -> void:
-	_mode = Mode.EDIT
+	_mode = EditorMode.EDIT
 	_original_template = template
 
 	title = "Edit Template"
@@ -100,7 +100,7 @@ func _load_template_data(template: Template) -> void:
 
 ## Called when OK button is pressed
 func _on_confirmed() -> void:
-	if _mode == Mode.CREATE:
+	if _mode == EditorMode.CREATE:
 		_create_template()
 	else:
 		_update_template()

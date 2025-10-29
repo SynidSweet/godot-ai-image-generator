@@ -16,7 +16,7 @@ config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ai_pixel_art_generator/plugin.gd", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/ai_pixel_art_generator/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [physics]
 
