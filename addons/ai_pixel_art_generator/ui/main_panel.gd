@@ -10,13 +10,17 @@ const PluginLogger = preload("res://addons/ai_pixel_art_generator/core/logger.gd
 const Template = preload("res://addons/ai_pixel_art_generator/models/template.gd")
 const GenerationSettings = preload("res://addons/ai_pixel_art_generator/models/generation_settings.gd")
 const TemplateEditorDialog = preload("res://addons/ai_pixel_art_generator/ui/dialogs/template_editor_dialog.tscn")
+const SettingsDialog = preload("res://addons/ai_pixel_art_generator/ui/dialogs/settings_dialog.tscn")
 
 var _logger: PluginLogger
 var _template_manager: Variant = null
 var _generation_pipeline: Variant = null
 var _export_manager: Variant = null
+var _settings_repository: Variant = null
+var _palette_repository: Variant = null
 var _selected_template: Template = null
 var _template_editor: ConfirmationDialog = null
+var _settings_dialog: AcceptDialog = null
 var _generated_result: Variant = null  # Stores GenerationResult
 
 # UI node references - Template selector
@@ -24,6 +28,7 @@ var _generated_result: Variant = null  # Stores GenerationResult
 @onready var _new_button: Button = $TemplateSelector/NewButton
 @onready var _edit_button: Button = $TemplateSelector/EditButton
 @onready var _delete_button: Button = $TemplateSelector/DeleteButton
+@onready var _settings_button: Button = $TemplateSelector/SettingsButton
 
 # UI node references - Input section
 @onready var _ref_image_preview: TextureRect = $InputSection/ReferenceImagePanel/ImagePreview
@@ -52,6 +57,7 @@ func _ready() -> void:
 	_new_button.pressed.connect(_on_new_template_pressed)
 	_edit_button.pressed.connect(_on_edit_template_pressed)
 	_delete_button.pressed.connect(_on_delete_template_pressed)
+	_settings_button.pressed.connect(_on_settings_pressed)
 	_template_dropdown.item_selected.connect(_on_template_selected)
 
 	# Connect button signals - Generation
@@ -71,6 +77,15 @@ func _ready() -> void:
 		# If initialize() was already called, initialize the editor now
 		if _template_manager != null:
 			_template_editor.initialize(_template_manager)
+
+	# Create settings dialog
+	_settings_dialog = SettingsDialog.instantiate()
+	if _settings_dialog:
+		add_child(_settings_dialog)
+
+		# If initialize() was already called, initialize the dialog now
+		if _settings_repository != null and _palette_repository != null:
+			_settings_dialog.initialize(_settings_repository, _palette_repository)
 
 	# If initialize() was already called, refresh the template list now
 	if _template_manager != null:
@@ -120,6 +135,27 @@ func initialize(service_container: Variant) -> void:
 		_logger.info("Got export_manager service")
 	else:
 		_logger.error("Failed to get export_manager", {"error": em_result.error})
+
+	# Get settings_repository service
+	var sr_result = service_container.get_service("settings_repository")
+	if sr_result.is_ok():
+		_settings_repository = sr_result.value
+		_logger.info("Got settings_repository service")
+	else:
+		_logger.error("Failed to get settings_repository", {"error": sr_result.error})
+
+	# Get palette_repository service
+	var pr_result = service_container.get_service("palette_repository")
+	if pr_result.is_ok():
+		_palette_repository = pr_result.value
+
+		# Initialize settings dialog with repositories (if it was already created)
+		if _settings_dialog != null:
+			_settings_dialog.initialize(_settings_repository, _palette_repository)
+
+		_logger.info("Got palette_repository service")
+	else:
+		_logger.error("Failed to get palette_repository", {"error": pr_result.error})
 
 
 ## Refreshes the template dropdown list
@@ -193,6 +229,17 @@ func _on_delete_template_pressed() -> void:
 	confirm_dialog.confirmed.connect(func(): _confirm_delete_template(_selected_template.id, confirm_dialog))
 	add_child(confirm_dialog)
 	confirm_dialog.popup_centered()
+
+
+## Called when Settings button is pressed
+func _on_settings_pressed() -> void:
+	_logger.debug("Settings button pressed")
+
+	if _settings_dialog == null:
+		_logger.error("Settings dialog not initialized")
+		return
+
+	_settings_dialog.open_settings()
 
 
 ## Confirms and executes template deletion

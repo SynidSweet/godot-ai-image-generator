@@ -1,0 +1,137 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5tydk2wcb3mp"]
+
+[ext_resource type="Script" path="res://addons/ai_pixel_art_generator/ui/dialogs/settings_dialog.gd" id="1_dialog_script"]
+
+[node name="SettingsDialog" type="AcceptDialog"]
+title = "Plugin Settings"
+size = Vector2i(500, 450)
+script = ExtResource("1_dialog_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 492.0
+offset_bottom = 407.0
+
+[node name="APIKeyField" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/APIKeyField"]
+layout_mode = 2
+text = "Gemini API Key:"
+tooltip_text = "Get your API key from https://ai.google.dev/"
+
+[node name="LineEdit" type="LineEdit" parent="Content/APIKeyField"]
+layout_mode = 2
+placeholder_text = "Enter your Gemini API key"
+secret = true
+secret_character = "•"
+
+[node name="HelpLabel" type="Label" parent="Content/APIKeyField"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Get your free API key at: https://ai.google.dev/"
+
+[node name="HSeparator1" type="HSeparator" parent="Content"]
+layout_mode = 2
+
+[node name="GenerationSettingsLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Generation Settings"
+theme_type_variation = &"HeaderMedium"
+
+[node name="TemperatureField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/TemperatureField"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Temperature:"
+tooltip_text = "Controls randomness (0.0 = deterministic, 2.0 = very random)"
+
+[node name="SpinBox" type="SpinBox" parent="Content/TemperatureField"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 2.0
+step = 0.1
+value = 1.0
+
+[node name="AspectRatioField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/AspectRatioField"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Aspect Ratio:"
+tooltip_text = "Default aspect ratio for generated images"
+
+[node name="OptionButton" type="OptionButton" parent="Content/AspectRatioField"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 5
+selected = 0
+popup/item_0/text = "1:1 (Square)"
+popup/item_0/id = 0
+popup/item_1/text = "16:9 (Widescreen)"
+popup/item_1/id = 1
+popup/item_2/text = "9:16 (Portrait)"
+popup/item_2/id = 2
+popup/item_3/text = "4:3 (Classic)"
+popup/item_3/id = 3
+popup/item_4/text = "3:4 (Tall)"
+popup/item_4/id = 4
+
+[node name="HSeparator2" type="HSeparator" parent="Content"]
+layout_mode = 2
+
+[node name="ExportSettingsLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Export Settings"
+theme_type_variation = &"HeaderMedium"
+
+[node name="ExportPathField" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/ExportPathField"]
+layout_mode = 2
+text = "Default Export Path:"
+tooltip_text = "Where generated images will be saved"
+
+[node name="PathContainer" type="HBoxContainer" parent="Content/ExportPathField"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="Content/ExportPathField/PathContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "res://"
+editable = false
+
+[node name="BrowseButton" type="Button" parent="Content/ExportPathField/PathContainer"]
+layout_mode = 2
+text = "Browse"
+
+[node name="DefaultPaletteField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/DefaultPaletteField"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Default Palette:"
+tooltip_text = "Default color palette for new templates"
+
+[node name="OptionButton" type="OptionButton" parent="Content/DefaultPaletteField"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "db32"
+popup/item_0/id = 0
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Select Export Directory"
+initial_position = 1
+size = Vector2i(600, 400)
+ok_button_text = "Select"
+file_mode = 2
+access = 2

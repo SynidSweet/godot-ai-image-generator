@@ -32,6 +32,10 @@ text = "Edit"
 layout_mode = 2
 text = "Delete"
 
+[node name="SettingsButton" type="Button" parent="TemplateSelector"]
+layout_mode = 2
+text = "Settings"
+
 [node name="HSeparator1" type="HSeparator" parent="."]
 layout_mode = 2
 
