@@ -367,10 +367,13 @@ func _on_api_generation_complete(result: Variant) -> void:
 
 	# Create result object
 	var gen_result := GenerationResult.new()
-	gen_result.conformed_image = conformed_image
+	gen_result.original_image = reference_image
+	gen_result.palette_conformed_image = conformed_image
 	gen_result.generated_image = generated_image
-	gen_result.pixelated_image = pixelated_image
-	gen_result.upscaled_image = upscaled_image
+	gen_result.pixelated_image = pixelated_image  # Store the small pixelated version
+
+	# Store upscaled as a polish iteration for now (hacky but works with current model)
+	gen_result.add_polish_iteration(upscaled_image)
 
 	# Emit success
 	set_pipeline_state(State.COMPLETED)

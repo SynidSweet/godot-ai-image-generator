@@ -390,9 +390,15 @@ func _on_save_pressed() -> void:
 
 	_logger.info("Saving result", {"filename": filename})
 
-	# Export the final upscaled image
+	# Get the final image (prefers upscaled/polish over pixelated)
+	var final_image_result = _generated_result.get_final_image()
+	if final_image_result.is_err():
+		_show_error("No final image to save")
+		return
+
+	# Export the final image
 	var export_result = _export_manager.export_image(
-		_generated_result.upscaled_image,
+		final_image_result.value,
 		filename,
 		"res://"  # Save to project root
 	)
@@ -428,20 +434,21 @@ func _load_reference_image(path: String) -> void:
 ## Displays the generation result in pipeline previews
 func _display_pipeline_result(gen_result: Variant) -> void:
 	# Stage 1: Palette conformed
-	if gen_result.conformed_image != null:
-		_display_image_in_preview(_stage1_preview, gen_result.conformed_image)
+	if gen_result.palette_conformed_image != null:
+		_display_image_in_preview(_stage1_preview, gen_result.palette_conformed_image)
 
 	# Stage 2: AI Generated
 	if gen_result.generated_image != null:
 		_display_image_in_preview(_stage2_preview, gen_result.generated_image)
 
-	# Stage 3: Pixelated
+	# Stage 3: Pixelated (small version)
 	if gen_result.pixelated_image != null:
 		_display_image_in_preview(_stage3_preview, gen_result.pixelated_image)
 
-	# Final: Upscaled
-	if gen_result.upscaled_image != null:
-		_display_image_in_preview(_final_preview, gen_result.upscaled_image)
+	# Final: Get final image (upscaled version from polish iterations)
+	var final_result = gen_result.get_final_image()
+	if final_result.is_ok():
+		_display_image_in_preview(_final_preview, final_result.value)
 
 
 ## Displays an image in a TextureRect
