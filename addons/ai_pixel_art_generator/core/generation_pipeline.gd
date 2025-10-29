@@ -313,6 +313,7 @@ func _run_generation_async(template: Template, settings: GenerationSettings) -> 
 	# Store context for async callback
 	_current_generation_context = {
 		"template": template,
+		"reference_image": reference_image,
 		"conformed_image": conformed_image
 	}
 
@@ -328,6 +329,7 @@ func _on_api_generation_complete(result: Variant) -> void:
 		return
 
 	var template: Template = _current_generation_context.get("template")
+	var reference_image: Image = _current_generation_context.get("reference_image")
 	var conformed_image: Image = _current_generation_context.get("conformed_image")
 
 	# Clear context
