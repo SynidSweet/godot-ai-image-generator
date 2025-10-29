@@ -1,0 +1,119 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2rwm8yvxh7vp"]
+
+[ext_resource type="Script" path="res://addons/ai_pixel_art_generator/ui/dialogs/template_editor_dialog.gd" id="1_dialog_script"]
+
+[node name="TemplateEditorDialog" type="ConfirmationDialog"]
+title = "Template Editor"
+size = Vector2i(500, 400)
+script = ExtResource("1_dialog_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 492.0
+offset_bottom = 357.0
+
+[node name="IDField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/IDField"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "ID:"
+
+[node name="LineEdit" type="LineEdit" parent="Content/IDField"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "unique-id"
+
+[node name="NameField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/NameField"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Name:"
+
+[node name="LineEdit" type="LineEdit" parent="Content/NameField"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Template Name"
+
+[node name="ReferenceImageField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/ReferenceImageField"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Reference Image:"
+
+[node name="PathEdit" type="LineEdit" parent="Content/ReferenceImageField"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "res://path/to/image.png"
+editable = false
+
+[node name="BrowseButton" type="Button" parent="Content/ReferenceImageField"]
+layout_mode = 2
+text = "Browse"
+
+[node name="BasePromptField" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/BasePromptField"]
+layout_mode = 2
+text = "Base Prompt:"
+
+[node name="TextEdit" type="TextEdit" parent="Content/BasePromptField"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+placeholder_text = "Describe what to generate..."
+
+[node name="TargetResolutionField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/TargetResolutionField"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Target Resolution:"
+
+[node name="WidthSpinBox" type="SpinBox" parent="Content/TargetResolutionField"]
+layout_mode = 2
+min_value = 8.0
+max_value = 512.0
+value = 32.0
+
+[node name="XLabel" type="Label" parent="Content/TargetResolutionField"]
+layout_mode = 2
+text = "×"
+
+[node name="HeightSpinBox" type="SpinBox" parent="Content/TargetResolutionField"]
+layout_mode = 2
+min_value = 8.0
+max_value = 512.0
+value = 32.0
+
+[node name="PaletteField" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/PaletteField"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Palette:"
+
+[node name="OptionButton" type="OptionButton" parent="Content/PaletteField"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "db32"
+popup/item_0/id = 0
+
+[node name="FileDialog" type="FileDialog"]
+title = "Select Reference Image"
+initial_position = 1
+size = Vector2i(600, 400)
+ok_button_text = "Select"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png ; PNG Images", "*.jpg, *.jpeg ; JPEG Images")

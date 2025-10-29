@@ -1,0 +1,194 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw3xqm7qvn8yi"]
+
+[ext_resource type="Script" path="res://addons/ai_pixel_art_generator/ui/main_panel.gd" id="1_main_panel_script"]
+
+[node name="MainPanel" type="VBoxContainer"]
+custom_minimum_size = Vector2(400, 600)
+offset_right = 400.0
+offset_bottom = 600.0
+script = ExtResource("1_main_panel_script")
+
+[node name="TemplateSelector" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TemplateSelector"]
+layout_mode = 2
+text = "Template:"
+
+[node name="TemplateDropdown" type="OptionButton" parent="TemplateSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select Template..."
+
+[node name="NewButton" type="Button" parent="TemplateSelector"]
+layout_mode = 2
+text = "New"
+
+[node name="EditButton" type="Button" parent="TemplateSelector"]
+layout_mode = 2
+text = "Edit"
+
+[node name="DeleteButton" type="Button" parent="TemplateSelector"]
+layout_mode = 2
+text = "Delete"
+
+[node name="HSeparator1" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="InputSection" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ReferenceImagePanel" type="VBoxContainer" parent="InputSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InputSection/ReferenceImagePanel"]
+layout_mode = 2
+text = "Reference Image"
+
+[node name="ImagePreview" type="TextureRect" parent="InputSection/ReferenceImagePanel"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectImageButton" type="Button" parent="InputSection/ReferenceImagePanel"]
+layout_mode = 2
+text = "Select Image"
+
+[node name="PromptsPanel" type="VBoxContainer" parent="InputSection"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BasePromptLabel" type="Label" parent="InputSection/PromptsPanel"]
+layout_mode = 2
+text = "Base Prompt:"
+
+[node name="BasePromptText" type="TextEdit" parent="InputSection/PromptsPanel"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+placeholder_text = "Describe what to generate..."
+
+[node name="DetailPromptLabel" type="Label" parent="InputSection/PromptsPanel"]
+layout_mode = 2
+text = "Detail Prompt:"
+
+[node name="DetailPromptText" type="TextEdit" parent="InputSection/PromptsPanel"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+placeholder_text = "Additional details..."
+
+[node name="GenerateButton" type="Button" parent="InputSection/PromptsPanel"]
+layout_mode = 2
+text = "Generate"
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="PipelineSection" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PipelineSection"]
+layout_mode = 2
+text = "Processing Pipeline"
+
+[node name="PipelinePreviews" type="HBoxContainer" parent="PipelineSection"]
+layout_mode = 2
+
+[node name="Stage1" type="VBoxContainer" parent="PipelineSection/PipelinePreviews"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="PipelineSection/PipelinePreviews/Stage1"]
+layout_mode = 2
+text = "1. Palette Conformed"
+horizontal_alignment = 1
+
+[node name="Preview" type="TextureRect" parent="PipelineSection/PipelinePreviews/Stage1"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stage2" type="VBoxContainer" parent="PipelineSection/PipelinePreviews"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="PipelineSection/PipelinePreviews/Stage2"]
+layout_mode = 2
+text = "2. AI Generated"
+horizontal_alignment = 1
+
+[node name="Preview" type="TextureRect" parent="PipelineSection/PipelinePreviews/Stage2"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stage3" type="VBoxContainer" parent="PipelineSection/PipelinePreviews"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="PipelineSection/PipelinePreviews/Stage3"]
+layout_mode = 2
+text = "3. Pixelated"
+horizontal_alignment = 1
+
+[node name="Preview" type="TextureRect" parent="PipelineSection/PipelinePreviews/Stage3"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ProgressBar" type="ProgressBar" parent="PipelineSection"]
+layout_mode = 2
+value = 0.0
+show_percentage = false
+
+[node name="HSeparator3" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="OutputSection" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="OutputSection"]
+layout_mode = 2
+text = "Final Output"
+
+[node name="FinalPreview" type="TextureRect" parent="OutputSection"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SaveControls" type="HBoxContainer" parent="OutputSection"]
+layout_mode = 2
+
+[node name="FilenameLabel" type="Label" parent="OutputSection/SaveControls"]
+layout_mode = 2
+text = "Filename:"
+
+[node name="FilenameEdit" type="LineEdit" parent="OutputSection/SaveControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "generated_asset"
+
+[node name="ExtensionLabel" type="Label" parent="OutputSection/SaveControls"]
+layout_mode = 2
+text = ".png"
+
+[node name="SaveButton" type="Button" parent="OutputSection/SaveControls"]
+layout_mode = 2
+text = "Save to Project"
+
+[node name="PolishSection" type="VBoxContainer" parent="OutputSection"]
+layout_mode = 2
+
+[node name="PolishButton" type="Button" parent="OutputSection/PolishSection"]
+layout_mode = 2
+text = "Polish (Optional)"
+
+[node name="PolishInfo" type="Label" parent="OutputSection/PolishSection"]
+layout_mode = 2
+text = "Polish iterations: 0"
