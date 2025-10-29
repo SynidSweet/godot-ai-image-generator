@@ -1,20 +1,20 @@
 extends GutTest
 
-## Tests for the Logger class
+## Tests for the PluginLogger class
 ##
-## The Logger class provides consistent logging throughout the codebase
+## The PluginLogger class provides consistent logging throughout the codebase
 ## with different log levels and context.
 
-const Logger = preload("res://addons/ai_pixel_art_generator/core/logger.gd")
+const PluginLogger = preload("res://addons/ai_pixel_art_generator/core/logger.gd")
 
 
-var logger: Logger
+var logger: PluginLogger
 var test_output: Array[String] = []
 
 
 func before_each() -> void:
 	test_output.clear()
-	logger = Logger.new("TestModule")
+	logger = PluginLogger.new("TestModule")
 	# Replace print function with test capture
 	logger._print_func = func(msg: String): test_output.append(msg)
 
@@ -79,15 +79,15 @@ func test_log_with_data() -> void:
 
 
 func test_global_logger_singleton() -> void:
-	var global1 := Logger.get_logger("Global")
-	var global2 := Logger.get_logger("Global")
+	var global1 := PluginLogger.get_logger("Global")
+	var global2 := PluginLogger.get_logger("Global")
 
 	assert_eq(global1, global2, "get_logger should return same instance for same context")
 
 
 func test_different_contexts_have_different_loggers() -> void:
-	var logger1 := Logger.get_logger("Context1")
-	var logger2 := Logger.get_logger("Context2")
+	var logger1 := PluginLogger.get_logger("Context1")
+	var logger2 := PluginLogger.get_logger("Context2")
 
 	assert_ne(logger1, logger2, "Different contexts should have different loggers")
 	assert_eq(logger1.context, "Context1", "Logger 1 should have correct context")

@@ -1,18 +1,20 @@
-class_name Logger
+class_name PluginLogger
 
-## Logger for Consistent Logging
+## PluginLogger for Consistent Logging
 ##
 ## Provides structured logging with levels (DEBUG, INFO, WARN, ERROR)
 ## and context for better debugging and monitoring.
 ##
+## Note: Renamed from Logger to PluginLogger to avoid conflicts with Godot 4.5's native Logger class
+##
 ## Usage:
-##   var logger := Logger.new("MyClass")
+##   var logger := PluginLogger.new("MyClass")
 ##   logger.info("Operation completed")
 ##   logger.warn("Something unexpected happened")
 ##   logger.error("Operation failed", {"reason": "network error"})
 ##
 ## Or use singleton pattern:
-##   var logger := Logger.get_logger("MyClass")
+##   var logger := PluginLogger.get_logger("MyClass")
 
 const LOG_LEVEL_DEBUG := "DEBUG"
 const LOG_LEVEL_INFO := "INFO"
@@ -34,9 +36,9 @@ func _init(ctx: String = "Main") -> void:
 
 
 ## Get or create a logger for the given context (singleton pattern)
-static func get_logger(ctx: String) -> Logger:
+static func get_logger(ctx: String) -> PluginLogger:
 	if not _loggers.has(ctx):
-		_loggers[ctx] = Logger.new(ctx)
+		_loggers[ctx] = PluginLogger.new(ctx)
 	return _loggers[ctx]
 
 
