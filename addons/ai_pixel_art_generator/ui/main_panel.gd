@@ -68,6 +68,10 @@ func _ready() -> void:
 		add_child(_template_editor)
 		_template_editor.template_saved.connect(_on_template_saved)
 
+		# If initialize() was already called, initialize the editor now
+		if _template_manager != null:
+			_template_editor.initialize(_template_manager)
+
 	# If initialize() was already called, refresh the template list now
 	if _template_manager != null:
 		_refresh_template_list()
@@ -87,11 +91,11 @@ func initialize(service_container: Variant) -> void:
 		_template_manager.template_updated.connect(_on_template_changed)
 		_template_manager.template_deleted.connect(_on_template_deleted)
 
-		# Initialize template editor with manager
-		if _template_editor and _template_editor.has_method("initialize"):
+		# Initialize template editor with manager (if _ready() already happened)
+		if _template_editor != null:
 			_template_editor.initialize(_template_manager)
 
-		# Load templates
+		# Load templates (if _ready() already happened)
 		_refresh_template_list()
 	else:
 		_logger.error("Failed to get template_manager", {"error": tm_result.error})
